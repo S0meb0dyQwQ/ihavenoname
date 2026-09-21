@@ -1,0 +1,5 @@
+000001 there passenger 10:00 60
+000101 Magadan fast 8:00 35
+666666 Hell fast 0:0 1
+123456 Home passenger 13:00 180
+398475 Home fast 21:30 163 
