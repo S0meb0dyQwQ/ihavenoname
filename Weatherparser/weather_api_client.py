@@ -76,9 +76,9 @@ class WeatherResponse(BaseModel):
     cod: int
 
 class Client:
-    BASE_URL = "https://api.openweathermap.org/data/2.5"
+    base_url = "https://api.openweathermap.org/data/2.5"
 
-    def __init__(self, api_key: str, units: str = "metric", lang: str = "ru"):
+    def __init__(self, api_key: str, units: str = "metric", lang: str = "en"):
         
         if not api_key:
             raise ValueError("API cannot be empty")
@@ -94,7 +94,7 @@ class Client:
         "units": self.units,
         "lang": self.lang,
         })
-        url = f"{self.BASE_URL}/{endpoint}"
+        url = f"{self.base_url}/{endpoint}"
         response = self.session.get(url, params=params, timeout=10)
         response.raise_for_status()
         return response.json()
@@ -115,13 +115,13 @@ class Client:
         data = self._get("weather", params)
         return WeatherResponse(**data)
 
-API_KEY = input("Enter ur key (do not tell ur key to strangers)")
+api_key = input("Enter ur key (do not tell ur key to strangers)")
 city = input("Where do u want to know weather now?")
-client = Client(API_KEY,"metric","ru")
+client = Client(api_key,"metric","en")
 weather = client.get_current_weather(city)
 print(f"City: {weather.name}, {weather.sys.country}")
 print(f"Temp: {weather.main.temp} °C")
 print(f"Feels like (hell): {weather.main.feels_like} °C")
 print(f"Description: {weather.weather[0].description}")
 print(f"Humidity: {weather.main.humidity}%")
-print(f"Wind: {weather.wind.speed} м/с, {weather.wind.deg}°")
+print(f"Wind: {weather.wind.speed} m/s, {weather.wind.deg}°")
