@@ -87,18 +87,6 @@ class Client:
         self.lang = lang
         self.session = requests.Session()
 
-    def _get(self, endpoint: str, params: Dict[str, Any]) -> Dict[str, Any]:
-        
-        params.update({
-        "appid": self.api_key,
-        "units": self.units,
-        "lang": self.lang,
-        })
-        url = f"{self.base_url}/{endpoint}"
-        response = self.session.get(url, params=params, timeout=10)
-        response.raise_for_status()
-        return response.json()
-
     def get_current_weather(self,
         city: Optional[str] = None,
         lat: Optional[float] = None,
@@ -112,8 +100,15 @@ class Client:
             params["lon"] = lon
         else:
             raise ValueError("Give me 'city' or 'lat/lon'")
-        data = self._get("weather", params)
-        return WeatherResponse(**data)
+        params.update({
+        "appid": self.api_key,
+        "units": self.units,
+        "lang": self.lang,
+        })
+        url = f"{self.base_url}/weather"
+        response = self.session.get(url, params=params, timeout=10)
+        response.raise_for_status()
+        return WeatherResponse(**response.json())
 
 api_key = input("Enter ur key (do not tell ur key to strangers)")
 city = input("Where do u want to know weather now?")
