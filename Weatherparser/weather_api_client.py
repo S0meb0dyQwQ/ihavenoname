@@ -2,13 +2,15 @@ import requests
 from typing import Optional, Dict, Any, List
 from pydantic import BaseModel, Field
 
+class Coord(BaseModel):
+    lon: float
+    lat: float
 
 class Weather(BaseModel):
     id: int
     main: str
     description: str
     icon: str
-
 
 class Main(BaseModel):
     temp: float
@@ -20,30 +22,16 @@ class Main(BaseModel):
     sea_level: Optional[int] = None
     grnd_level: Optional[int] = None
 
-
 class Wind(BaseModel):
     speed: float
     deg: int
     gust: Optional[float] = None
 
+class Rain(BaseModel):
+    one_h: Optional[float] = Field(None, alias="1h")
 
 class Clouds(BaseModel):
     all: int
-
-
-class Rain(BaseModel):
-    one_h: Optional[float] = Field(None, alias="1h")
-    three_h: Optional[float] = Field(None, alias="3h")
-
-    model_config = {"populate_by_name": True}
-
-
-class Snow(BaseModel): 
-    one_h: Optional[float] = Field(None, alias="1h")
-    three_h: Optional[float] = Field(None, alias="3h")
-
-    model_config = {"populate_by_name": True}
-
 
 class Sys(BaseModel):
     type: Optional[int] = None
@@ -51,12 +39,6 @@ class Sys(BaseModel):
     country: Optional[str] = None
     sunrise: Optional[int] = None
     sunset: Optional[int] = None
-
-
-class Coord(BaseModel):
-    lon: float
-    lat: float
-
 
 class WeatherResponse(BaseModel):
     coord: Coord
@@ -67,7 +49,6 @@ class WeatherResponse(BaseModel):
     wind: Wind
     clouds: Clouds
     rain: Optional[Rain] = None
-    snow: Optional[Snow] = None
     dt: int
     sys: Sys
     timezone: Optional[int] = None
@@ -105,6 +86,7 @@ class Client:
         "units": self.units,
         "lang": self.lang,
         })
+        
         url = f"{self.base_url}/weather"
         response = self.session.get(url, params=params, timeout=10)
         response.raise_for_status()
@@ -112,6 +94,7 @@ class Client:
 
 api_key = input("Enter ur key (do not tell ur key to strangers)")
 city = input("Where do u want to know weather now?")
+
 client = Client(api_key,"metric","en")
 weather = client.get_current_weather(city)
 print(f"City: {weather.name}, {weather.sys.country}")
