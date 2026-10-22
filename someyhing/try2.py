@@ -52,7 +52,6 @@ try:
     if min_Num < 2:
         raise ValueError(" your number won't change")
     new_x = dividenum(x,make_Number,min_Num)
-    print(new_x)
     new_x = dividenum(new_x,make_Number,min_Num)
     print(new_x)
 except ValueError as e:
